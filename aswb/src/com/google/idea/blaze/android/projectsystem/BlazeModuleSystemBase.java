@@ -19,7 +19,6 @@ import com.android.ide.common.repository.GradleCoordinate;
 import com.android.ide.common.util.PathString;
 import com.android.manifmerger.ManifestSystemProperty;
 import com.android.projectmodel.ExternalLibrary;
-import com.android.projectmodel.Library;
 import com.android.projectmodel.SelectiveResourceFolder;
 import com.android.tools.idea.projectsystem.AndroidModuleSystem;
 import com.android.tools.idea.projectsystem.CapabilityNotSupported;
@@ -338,7 +337,7 @@ abstract class BlazeModuleSystemBase implements AndroidModuleSystem, BlazeClassF
         .collect(Collectors.toList());
   }
 
-  public Collection<? extends Library> getDependentLibraries() {
+  public Collection<ExternalLibrary> getDependentLibraries() {
     BlazeProjectData blazeProjectData =
         BlazeProjectDataManager.getInstance(project).getBlazeProjectData();
 
@@ -371,7 +370,7 @@ abstract class BlazeModuleSystemBase implements AndroidModuleSystem, BlazeClassF
       return ImmutableList.of();
     }
 
-    ImmutableList.Builder<Library> libraries = ImmutableList.builder();
+    ImmutableList.Builder<ExternalLibrary> libraries = ImmutableList.builder();
     ArtifactLocationDecoder decoder = blazeProjectData.getArtifactLocationDecoder();
     ExternalLibraryInterner externalLibraryInterner = ExternalLibraryInterner.getInstance(project);
     for (String libraryKey : registry.get(module).resourceLibraryKeys) {

@@ -39,4 +39,48 @@ class BlazeAndroidProjectStructureSyncerCompat {
     facet.getProperties().TEST_RES_FOLDERS_RELATIVE_PATH = "";
     AndroidModel.set(facet, androidModel);
   }
+
+  static void updateModuleFacetInMemoryState(
+      Project project,
+      @Nullable BlazeContext context,
+      AndroidSdkPlatform androidSdkPlatform,
+      Module module,
+      File moduleDirectory,
+      @Nullable File manifestFile,
+      String resourceJavaPackage,
+      Collection<File> resources,
+      boolean configAndroidJava8Libs,
+      @Nullable ManifestParsingStatCollector manifestParsingStatCollector) {
+    List<PathString> manifests =
+        manifestFile == null
+            ? ImmutableList.of()
+            : ImmutableList.of(PathStringUtil.toPathString(manifestFile));
+    SourceSet sourceSet =
+        new SourceSet(
+            ImmutableMap.of(
+                AndroidPathType.RES,
+                PathStringUtil.toPathStrings(resources),
+                AndroidPathType.MANIFEST,
+                manifests));
+    SourceProvider sourceProvider =
+        SourceProviderUtil.toSourceProvider(sourceSet, module.getName());
+
+    String applicationId =
+        getApplicationIdFromManifestOrDefault(
+            project, context, manifestFile, resourceJavaPackage, manifestParsingStatCollector);
+
+    BlazeAndroidModel androidModel =
+        new BlazeAndroidModel(
+            project,
+            moduleDirectory,
+            sourceProvider,
+            applicationId,
+            androidSdkPlatform.androidMinSdkLevel,
+            configAndroidJava8Libs);
+    AndroidFacet facet = AndroidFacet.getInstance(module);
+    if (facet != null) {
+      BlazeAndroidProjectStructureSyncerCompat.updateAndroidFacetWithSourceAndModel(
+          facet, sourceProvider, androidModel);
+    }
+  }
 }

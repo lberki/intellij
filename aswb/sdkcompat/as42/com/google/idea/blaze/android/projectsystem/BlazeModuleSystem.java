@@ -15,7 +15,7 @@
  */
 package com.google.idea.blaze.android.projectsystem;
 
-import com.android.projectmodel.Library;
+import com.android.projectmodel.ExternalLibrary;
 import com.android.tools.idea.projectsystem.AndroidModuleSystem;
 import com.intellij.openapi.module.Module;
 import java.util.Collection;
@@ -27,12 +27,12 @@ public class BlazeModuleSystem extends BlazeModuleSystemBase {
   }
 
   // @Override #api4.0
-  public Collection<Library> getResolvedLibraryDependencies() {
+  public Collection<ExternalLibrary> getResolvedLibraryDependencies() {
     return getResolvedDependentLibraries();
   }
 
   // @Override #api4.0
-  public Collection<Library> getResolvedDependentLibraries() {
-    return (Collection<Library>) getDependentLibraries();
+  public Collection<ExternalLibrary> getResolvedDependentLibraries() {
+    return getDependentLibraries();
   }
 }
